@@ -6,6 +6,7 @@
     <property name="nodeService" ref="NodeService" />
     <property name="dictionaryService" ref="DictionaryService" />
     <property name="namespaceService" ref="NamespaceService" />
+    <property name="startValue" value="${rl.numbering.startvalue}" />
     <!-- Numbering Storage configuration, should be defined by implementing bean -->
     <!-- <property name="numberingStorage" ref="numberingStorage" /> -->
   </bean>
