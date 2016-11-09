@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  
+  <bean id="rl.abstractNumberingComponent" class="org.redpill.alfresco.numbering.component.NumberingComponentImpl" abstract="true" depends-on="dictionaryBootstrap">
+    <property name="repositoryHelper" ref="repositoryHelper" />
+    <property name="nodeService" ref="NodeService" />
+    <property name="dictionaryService" ref="DictionaryService" />
+    <property name="namespaceService" ref="NamespaceService" />
+    <property name="startValue" value="${rl.numbering.startvalue}" />
+    <!-- Numbering Storage configuration, should be defined by implementing bean -->
+    <!-- <property name="numberingStorage" ref="numberingStorage" /> -->
+  </bean>
+  
+  
+</beans>

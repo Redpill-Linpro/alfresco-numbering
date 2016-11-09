@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  
+  <bean id="rl.attributeNumberingStorage" class="org.redpill.alfresco.numbering.storage.AttributeNumberingStorageImpl" depends-on="dictionaryBootstrap">
+    <property name="jobLockService" ref="jobLockService" />
+    <property name="retryingTransactionHelper" ref="retryingTransactionHelper" />
+    <property name="attributeService" ref="attributeService" />
+  </bean>
+  
+  <bean id="rl.nodeNumberingStorage" class="org.redpill.alfresco.numbering.storage.NodeNumberingStorageImpl" depends-on="dictionaryBootstrap">
+    <property name="jobLockService" ref="jobLockService" />
+    <property name="retryingTransactionHelper" ref="retryingTransactionHelper" />
+    <property name="behaviourFilter" ref="policyBehaviourFilter" />
+    <property name="namespaceService" ref="NamespaceService" />
+    <property name="nodeService" ref="NodeService" />
+    <property name="repositoryHelper" ref="repositoryHelper" />
+    <property name="searchService" ref="SearchService" />
+  </bean>
+
+</beans>
+
+
