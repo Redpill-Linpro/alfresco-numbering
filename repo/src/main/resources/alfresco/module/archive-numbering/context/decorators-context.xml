@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  
+  <bean id="rl.basicNumberingDecorator" class="org.redpill.alfresco.numbering.decorator.BasicDecorator">
+    <property name="zeroPadding" value="${rl.numbering.decorator.basic.zeropadding}" />
+  </bean>
+  <bean id="rl.prefixNumberingDecorator" class="org.redpill.alfresco.numbering.decorator.PrefixDecorator" parent="rl.basicNumberingDecorator">
+    <property name="prefix" value="${rl.numbering.decorator.prefix.prefix}" />
+    <property name="prefixSeparator" value="${rl.numbering.decorator.prefix.separator}" />
+    <property name="zeroPadding" value="${rl.numbering.decorator.prefix.zeropadding}" />
+  </bean>
+  <bean id="rl.currentDatePrefixNumberingDecorator" class="org.redpill.alfresco.numbering.decorator.CurrentDatePrefixDecorator" parent="rl.prefixNumberingDecorator">
+    <property name="datePattern" value="${rl.numbering.decorator.currentdateprefix.datePattern}" />
+    <property name="prefixSeparator" value="${rl.numbering.decorator.currentdateprefix.separator}" />
+    <property name="zeroPadding" value="${rl.numbering.decorator.currentdateprefix.zeropadding}" />
+  </bean>
+
+</beans>
+
+
