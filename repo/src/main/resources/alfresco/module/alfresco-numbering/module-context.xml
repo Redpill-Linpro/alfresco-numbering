@@ -5,6 +5,7 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-  <import resource="classpath*:alfresco/module/archive-numbering/context/*-context.xml" />
+  <import resource="classpath*:alfresco/module/alfresco-numbering/context/*-context.xml" />
+ 
 
 </beans>
