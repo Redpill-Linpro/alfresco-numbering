@@ -21,7 +21,7 @@ Repository dependency:
 <dependency>
   <groupId>org.redpill-linpro.alfresco.numbering</groupId>
   <artifactId>alfresco-numbering-repo</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
