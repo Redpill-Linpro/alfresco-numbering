@@ -1,7 +1,9 @@
 Alfresco Numbering
 =============================================
 
-This module is sponsored by Redpill Linpro AB - http://www.redpill-linpro.com.
+This module is sponsored by:
+Redpill Linpro AB - http://www.redpill-linpro.com
+Alingsås Kommun - http://www.alingsas.se
 
 Description
 -----------
