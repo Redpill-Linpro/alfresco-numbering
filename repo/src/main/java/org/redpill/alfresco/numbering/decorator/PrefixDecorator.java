@@ -24,22 +24,22 @@ public class PrefixDecorator extends BasicDecorator implements Decorator {
 
   /**
    * Decorate a number with prefix and prefix separator
-   * @param number
-   * @param nodeRef
-   * @param prefix
-   * @return 
+   * @param number The number to decorate
+   * @param nodeRef The node this affects
+   * @param prefix what prefix to append
+   * @return String
    */
-  protected String decorate(long number, NodeRef nodeRef, String prefix) {
+  protected String decorate(String number, NodeRef nodeRef, String prefix) {
     StringBuilder sb = new StringBuilder();
     sb.append(prefix);
     sb.append(prefixSeparator);
     sb.append(super.decorate(number, nodeRef));
     return sb.toString();
   }
-
+  
   @Override
-  public String decorate(long number, NodeRef nodeRef) {
+  public String decorate(String number, NodeRef nodeRef) {
     return decorate(number, nodeRef, prefix);
   }
-
+  
 }

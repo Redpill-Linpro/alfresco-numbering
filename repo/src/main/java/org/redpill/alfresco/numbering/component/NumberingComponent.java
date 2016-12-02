@@ -1,23 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.redpill.alfresco.numbering.component;
 
 import org.alfresco.service.cmr.repository.NodeRef;
 
 /**
  *
- * @author mars
+ * @author Marcus Svartmark - Redpill Linpro AB
  */
 public interface NumberingComponent {
   /**
    * Can be called to check if a new number generation is allowed. Will return
    * true or false to indicate if number generation is allowed or not.
    *
-   * @param nodeRef
-   * @return
+   * @param nodeRef The node to check
+   * @return boolean
    */
   public boolean allowGetNextNumber(final NodeRef nodeRef);
   
@@ -25,8 +20,7 @@ public interface NumberingComponent {
    * Can be called to check if a new number generation is allowed. Will throw
    * exception if not allowed
    *
-   * @param nodeRef
-   * @return
+   * @param nodeRef The node to check
    */
   public void assertAllowGetNextNumber(final NodeRef nodeRef);
   
@@ -34,7 +28,8 @@ public interface NumberingComponent {
    * Get the next number in the sequence (increasing the sequence), will however
    * not store the increased number on the node
    *
-   * @return
+   * @param nodeRef The node to check
+   * @return long
    */
   public long getNextNumber(final NodeRef nodeRef);
   
@@ -43,8 +38,8 @@ public interface NumberingComponent {
    * decorating it according to the attached decorator, will however not store
    * the increased number on the node
    *
-   * @param nodeRef
-   * @return
+   * @param nodeRef The node to get a decorated number for
+   * @return String
    */
   public String getDecoratedNextNumber(final NodeRef nodeRef);
 }

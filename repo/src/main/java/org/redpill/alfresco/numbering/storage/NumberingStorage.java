@@ -13,7 +13,7 @@ public interface NumberingStorage {
    * Returns the next number in the numbering series.
    * @param initialValue The initial value of the counter
    * @param id The counter id
-   * @return 
+   * @return long
    */
   long getNextNumber(long initialValue, String id);
 }
