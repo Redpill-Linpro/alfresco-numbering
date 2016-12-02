@@ -10,7 +10,6 @@ import org.alfresco.repo.lock.JobLockService;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -103,6 +102,7 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
 
   /**
    * Get the counter node
+   *
    * @param initialValue its initial value if node does not exist
    * @param id the id of the counter
    * @return NodeRef
@@ -117,7 +117,7 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
         counterNodeRef = null;
       }
     }
-    if (counterNodeRef==null) {
+    if (counterNodeRef == null) {
       //The counter was not found in cache, try to fetch it fro mthe repo
       NodeRef counterAppFolderNodeRef = getCounterApp();
       List<ChildAssociationRef> childAssocs = nodeService.getChildAssocs(counterAppFolderNodeRef);
@@ -128,7 +128,7 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
           counterNodeRef = childAssoc.getChildRef();
           break;
         } else {
-          LOG.trace("Id: "+id+", property:"+property);
+          LOG.trace("Id: " + id + ", property:" + property);
         }
       }
 
@@ -161,34 +161,29 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
 
   @Override
   public long getNextNumber(final long initialValue, final String id) {
-    QName lockName = QName.createQName(ATTR_ID + "." + id + ".lock");
-    final String lock = jobLockService.getLock(lockName, lockTTL, 100, 100);
-    try {
-      return retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Long>() {
-        @Override
-        public Long execute() throws Throwable {
-          behaviourFilter.disableBehaviour();
-          try {
-            return AuthenticationUtil.runAsSystem(new RunAsWork<Long>() {
-              @Override
-              public Long doWork() throws Exception {
-                NodeRef counterNode = getCounterNode(initialValue, id);
-                Long counterValue = (Long) nodeService.getProperty(counterNode, NUMBERING_PROPERTY);
-                nodeService.setProperty(counterNode, NUMBERING_PROPERTY, ++counterValue);
-                if (LOG.isTraceEnabled()) {
-                  LOG.trace("Counter " + id + " increased to " + counterValue);
-                }
-                return counterValue;
-              }
-            });
-          } finally {
-            behaviourFilter.enableBehaviour();
+
+    return retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Long>() {
+      @Override
+      public Long execute() throws Throwable {
+        behaviourFilter.disableBehaviour();
+        String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.SYSTEM_USER_NAME);
+        try {
+          NodeRef counterNode = getCounterNode(initialValue, id);
+          Long counterValue = (Long) nodeService.getProperty(counterNode, NUMBERING_PROPERTY);
+          nodeService.setProperty(counterNode, NUMBERING_PROPERTY, ++counterValue);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Counter " + id + " increased to " + counterValue);
           }
+          return counterValue;
+
+        } finally {
+          AuthenticationUtil.setFullyAuthenticatedUser(fullyAuthenticatedUser);
+          behaviourFilter.enableBehaviour();
         }
-      }, false, true);
-    } finally {
-      jobLockService.releaseLock(lock, lockName);
-    }
+      }
+    }, false, true);
+
   }
 
   public void setJobLockService(JobLockService jobLockService) {
