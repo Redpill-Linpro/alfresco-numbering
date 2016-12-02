@@ -7,7 +7,9 @@ This module is sponsored by:
 
 Description
 -----------
-This project contains features for generating unique sequences that can be used to number objects in Alfresco
+This project contains features for generating unique sequences that can be used to number objects in Alfresco. The following UML diagram shows the structure of the component.
+
+![UML Diagram](uml.png)
 
 Structure
 ------------
