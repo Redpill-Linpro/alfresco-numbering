@@ -1,7 +1,5 @@
 package org.redpill.alfresco.numbering.decorator;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.alfresco.service.cmr.repository.NodeRef;
 
 /**
@@ -24,6 +22,7 @@ public class PrefixDecorator extends BasicDecorator implements Decorator {
 
   /**
    * Decorate a number with prefix and prefix separator
+   *
    * @param number The number to decorate
    * @param nodeRef The node this affects
    * @param prefix what prefix to append
@@ -36,10 +35,10 @@ public class PrefixDecorator extends BasicDecorator implements Decorator {
     sb.append(super.decorate(number, nodeRef));
     return sb.toString();
   }
-  
+
   @Override
   public String decorate(String number, NodeRef nodeRef) {
     return decorate(number, nodeRef, prefix);
   }
-  
+
 }
