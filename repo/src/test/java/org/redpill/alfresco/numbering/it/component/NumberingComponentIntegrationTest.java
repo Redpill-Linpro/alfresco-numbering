@@ -68,7 +68,7 @@ public class NumberingComponentIntegrationTest extends AbstractRepoIntegrationTe
     long nextNumber = currentDatePrefixNumberingComponent.getNextNumber(uploadDocument.getNodeRef());
     assertEquals(currentNumber+1,nextNumber);
     String decoratedNextNumber = currentDatePrefixNumberingComponent.getDecoratedNextNumber(uploadDocument.getNodeRef());
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String expected = sdf.format(new Date());
     expected = expected+"-"+(nextNumber+1);
     assertEquals(expected, decoratedNextNumber);

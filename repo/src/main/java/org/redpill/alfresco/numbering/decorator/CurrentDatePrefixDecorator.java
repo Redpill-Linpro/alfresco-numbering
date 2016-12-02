@@ -17,10 +17,14 @@ public class CurrentDatePrefixDecorator extends PrefixDecorator implements Decor
     this.datePattern = datePattern;
   }
 
-  @Override
-  public String decorate(long number, NodeRef nodeRef) {
+  protected String getDatePrefix() {
     SimpleDateFormat df = new SimpleDateFormat(datePattern);
-    return decorate(number, nodeRef, df.format(new Date()));
+    return df.format(new Date());
+  }
+
+  @Override
+  public String decorate(String number, NodeRef nodeRef) {
+    return decorate(number, nodeRef, getDatePrefix());
   }
 
 }

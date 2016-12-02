@@ -10,7 +10,6 @@ import org.alfresco.repo.lock.JobLockService;
 import org.alfresco.repo.model.Repository;
 import org.alfresco.repo.policy.BehaviourFilter;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.security.authentication.AuthenticationUtil.RunAsWork;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -52,7 +51,7 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
   /**
    * Returns the node ref of the data dictionary
    *
-   * @return
+   * @return NodeRef
    */
   protected NodeRef getDataDictionaryNode() {
     List<NodeRef> nodeRefList = searchService.selectNodes(repositoryHelper.getRootHome(), DD_XPATH, null, namespaceService, false);
@@ -65,7 +64,7 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
   /**
    * Returns the node that is the holder for the counter properties
    *
-   * @return
+   * @return NodeRef
    */
   protected NodeRef getCounterApp() {
     NodeRef counterFolderNodeRef = null;
@@ -90,34 +89,46 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
   /**
    * Create the counter app folder
    *
-   * @return
+   * @return NodeRef
    */
   protected NodeRef createCounterApp() {
+    String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+    AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.SYSTEM_USER_NAME);
     ChildAssociationRef createNode = nodeService.createNode(getDataDictionaryNode(), ContentModel.ASSOC_CONTAINS, QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, NUMBERING_FOLDER_NAME), ContentModel.TYPE_FOLDER);
     nodeService.setProperty(createNode.getChildRef(), ContentModel.PROP_NAME, NUMBERING_FOLDER_NAME);
+    AuthenticationUtil.setFullyAuthenticatedUser(fullyAuthenticatedUser);
     return createNode.getChildRef();
   }
 
   /**
+   * Get the counter node
    *
-   * @param initialValue
-   * @param id
-   * @return
+   * @param initialValue its initial value if node does not exist
+   * @param id the id of the counter
+   * @return NodeRef
    */
   protected NodeRef getCounterNode(final long initialValue, final String id) {
-    if (!counterCache.containsKey(id)) {
+    NodeRef counterNodeRef = null;
+    if (counterCache.containsKey(id)) {
+      counterNodeRef = counterCache.get(id);
+      //If it has been removed, the remove it from cache
+      if (!nodeService.exists(counterNodeRef)) {
+        counterCache.remove(id);
+        counterNodeRef = null;
+      }
+    }
+    if (counterNodeRef == null) {
       //The counter was not found in cache, try to fetch it fro mthe repo
       NodeRef counterAppFolderNodeRef = getCounterApp();
       List<ChildAssociationRef> childAssocs = nodeService.getChildAssocs(counterAppFolderNodeRef);
       QName expectedQname = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, id);
-      NodeRef counterNodeRef = null;
       for (ChildAssociationRef childAssoc : childAssocs) {
         Serializable property = nodeService.getProperty(childAssoc.getChildRef(), ContentModel.PROP_NAME);
         if (id.equals(property)) {
           counterNodeRef = childAssoc.getChildRef();
           break;
         } else {
-          LOG.trace("Id: "+id+", property:"+property);
+          LOG.trace("Id: " + id + ", property:" + property);
         }
       }
 
@@ -127,54 +138,52 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
 
       counterCache.put(id, counterNodeRef);
     }
-    return counterCache.get(id);
+    return counterNodeRef;
   }
 
   /**
    * Create the counter node
    *
-   * @param initialValue
-   * @param id
-   * @return
+   * @param initialValue its initial value if node does not exist
+   * @param id the id of the counter
+   * @return NodeRef
    */
   protected NodeRef createCounterNode(final long initialValue, final String id) {
+    String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+    AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.SYSTEM_USER_NAME);
     ChildAssociationRef createNode = nodeService.createNode(getCounterApp(), ContentModel.ASSOC_CONTAINS, QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, id), ContentModel.TYPE_CONTENT);
     nodeService.setProperty(createNode.getChildRef(), ContentModel.PROP_NAME, id);
     nodeService.addAspect(createNode.getChildRef(), ContentModel.ASPECT_HIDDEN, null);
     nodeService.setProperty(createNode.getChildRef(), NUMBERING_PROPERTY, initialValue);
+    AuthenticationUtil.setFullyAuthenticatedUser(fullyAuthenticatedUser);
     return createNode.getChildRef();
   }
 
   @Override
   public long getNextNumber(final long initialValue, final String id) {
-    QName lockName = QName.createQName(ATTR_ID + "." + id + ".lock");
-    final String lock = jobLockService.getLock(lockName, lockTTL, 100, 100);
-    try {
-      return retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Long>() {
-        @Override
-        public Long execute() throws Throwable {
-          behaviourFilter.disableBehaviour();
-          try {
-            return AuthenticationUtil.runAsSystem(new RunAsWork<Long>() {
-              @Override
-              public Long doWork() throws Exception {
-                NodeRef counterNode = getCounterNode(initialValue, id);
-                Long counterValue = (Long) nodeService.getProperty(counterNode, NUMBERING_PROPERTY);
-                nodeService.setProperty(counterNode, NUMBERING_PROPERTY, ++counterValue);
-                if (LOG.isTraceEnabled()) {
-                  LOG.trace("Counter " + id + " increased to " + counterValue);
-                }
-                return counterValue;
-              }
-            });
-          } finally {
-            behaviourFilter.enableBehaviour();
+
+    return retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Long>() {
+      @Override
+      public Long execute() throws Throwable {
+        behaviourFilter.disableBehaviour();
+        String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.SYSTEM_USER_NAME);
+        try {
+          NodeRef counterNode = getCounterNode(initialValue, id);
+          Long counterValue = (Long) nodeService.getProperty(counterNode, NUMBERING_PROPERTY);
+          nodeService.setProperty(counterNode, NUMBERING_PROPERTY, ++counterValue);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Counter " + id + " increased to " + counterValue);
           }
+          return counterValue;
+
+        } finally {
+          AuthenticationUtil.setFullyAuthenticatedUser(fullyAuthenticatedUser);
+          behaviourFilter.enableBehaviour();
         }
-      }, false, true);
-    } finally {
-      jobLockService.releaseLock(lock, lockName);
-    }
+      }
+    }, false, true);
+
   }
 
   public void setJobLockService(JobLockService jobLockService) {

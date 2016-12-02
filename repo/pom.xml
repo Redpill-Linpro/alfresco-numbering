@@ -4,8 +4,8 @@
 
   <parent>
     <groupId>org.redpill-linpro.alfresco.numbering</groupId>
-  <artifactId>alfresco-numbering</artifactId>
-    <version>1.0.1</version>
+    <artifactId>alfresco-numbering</artifactId>
+    <version>1.1.0</version>
   </parent>
 
   <artifactId>alfresco-numbering-repo</artifactId>
@@ -129,6 +129,9 @@
   <profiles>
     <profile>
       <id>release</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>

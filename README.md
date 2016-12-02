@@ -1,11 +1,15 @@
 Alfresco Numbering
 =============================================
 
-This module is sponsored by Redpill Linpro AB - http://www.redpill-linpro.com.
+This module is sponsored by:
+* Redpill Linpro AB - http://www.redpill-linpro.com
+* Alingsås Kommun - http://www.alingsas.se
 
 Description
 -----------
-This project contains features for generating unique sequences that can be used to number objects in Alfresco
+This project contains features for generating unique sequences that can be used to number objects in Alfresco. The following UML diagram shows the structure of the component.
+
+![UML Diagram](uml.png)
 
 Structure
 ------------
@@ -21,7 +25,7 @@ Repository dependency:
 <dependency>
   <groupId>org.redpill-linpro.alfresco.numbering</groupId>
   <artifactId>alfresco-numbering-repo</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
