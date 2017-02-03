@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  
+  <bean id="rl.abstractNumberingPolicy" class="org.redpill.alfresco.numbering.policy.AbstractNumberingPolicyImpl" abstract="true" depends-on="dictionaryBootstrap">
+    <property name="policyComponent" ref="policyComponent" />
+    <property name="nodeService" ref="NodeService" />
+    <property name="dictionaryService" ref="DictionaryService" />
+    <property name="behaviourFilter" ref="policyBehaviourFilter" />
+    <property name="lockService" ref="LockService" />
+    <!-- Numbering Component configuration, should be defined by implementing bean -->
+    <!-- <property name="numberingComponent" ref="customNumberingComponent" /> -->
+  </bean>
+  
+  
+</beans>
