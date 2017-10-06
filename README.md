@@ -25,7 +25,7 @@ Repository dependency:
 <dependency>
   <groupId>org.redpill-linpro.alfresco.numbering</groupId>
   <artifactId>alfresco-numbering-repo</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -42,7 +42,8 @@ The jar files are also downloadable from: https://maven.redpill-linpro.com/nexus
 Usage
 -----
 
-Refer to test-component-context.xml and NumberingComponentIntegrationTest.java for examples on how to use the component. 
+* Refer to test-component-context.xml and NumberingComponentIntegrationTest.java for examples on how to use the component. 
+* The SampleNumberingPolicy can be used as a sample when implementing policys that generate numbers.
 
 
 License
