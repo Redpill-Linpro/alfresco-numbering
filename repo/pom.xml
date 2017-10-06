@@ -1,18 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/3.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.redpill-linpro.alfresco.numbering</groupId>
     <artifactId>alfresco-numbering</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
   </parent>
-
   <artifactId>alfresco-numbering-repo</artifactId>
   <packaging>jar</packaging>
   <name>Alfresco Numbering - Repo</name>
   <description>Alfresco Numbering - Repo</description>
-
   <properties>
     <module.id>archive-numbering</module.id>
     <alfresco.client.war>alfresco</alfresco.client.war>
@@ -20,21 +16,17 @@
     <tomcat.port>${tomcat.repo.port}</tomcat.port>
     <env>local</env>
   </properties>
-
   <dependencies>
-
     <dependency>
       <groupId>${alfresco.groupId}</groupId>
       <artifactId>alfresco-repository</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>${alfresco.groupId}</groupId>
       <artifactId>alfresco-remote-api</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.jmock</groupId>
       <artifactId>jmock-junit4</artifactId>
@@ -63,20 +55,8 @@
       <version>1.0.16</version>
       <scope>test</scope>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.alfresco</groupId>
-      <artifactId>alfresco-repository</artifactId>
-      <version>${alfresco.version}</version>
-      <classifier>h2scripts</classifier>
-      <scope>test</scope>
-    </dependency>
-    -->
-
   </dependencies>
-
   <build>
-
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -94,7 +74,6 @@
         <filtering>false</filtering>
       </resource>
     </resources>
-
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -109,7 +88,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -122,10 +100,8 @@
           </includes>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>release</id>
@@ -163,12 +139,9 @@
               <quiet>true</quiet>
             </configuration>
           </plugin>
-
         </plugins>
-
       </build>
     </profile>
   </profiles>
-
 </project>
 
