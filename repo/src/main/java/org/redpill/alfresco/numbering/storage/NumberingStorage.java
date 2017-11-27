@@ -16,4 +16,15 @@ public interface NumberingStorage {
    * @return long
    */
   long getNextNumber(long initialValue, String id);
+  
+  /**
+   * Returns the next number in the numbering series based on optionValue from drop down list
+   * @param startValue
+   * @param id
+   * @param optionValue
+   * @return
+   */
+
+  long getNextNumber(long startValue, String id, String optionValue);
+
 }

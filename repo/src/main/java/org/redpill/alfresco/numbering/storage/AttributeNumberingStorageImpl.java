@@ -56,6 +56,39 @@ public class AttributeNumberingStorageImpl implements NumberingStorage, Initiali
 
   }
 
+  /**
+   * this method generate the next number based on optionValue, option value is based on selected value from drop down list
+   */
+  @Override
+  public long getNextNumber(final long initialValue, final String ids,final String optionValue) {
+    QName lockName = QName.createQName(ATTR_ID + "." + optionValue + ".lock");
+    jobLockService.getLock(lockName, lockTTL, 100, 100);
+    return retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Long>() {
+      @Override
+      public Long execute() throws Throwable {
+
+        if (!attributeService.exists(ATTR_ID, optionValue)) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Creating attribute for counter with id " + ATTR_ID + "." + optionValue + ": " + initialValue);
+          }
+          attributeService.createAttribute(initialValue, ATTR_ID, optionValue);
+          return initialValue;
+        } else {
+          Long attributeValue = (Long) attributeService.getAttribute(ATTR_ID, optionValue);
+
+          attributeService.setAttribute(++attributeValue, ATTR_ID, optionValue);
+          if (LOG.isTraceEnabled()) {
+            LOG.trace("Increased counter with id " + ATTR_ID + "." + optionValue + " to " + attributeValue);
+          }
+          return attributeValue;
+        }
+      }
+    }, false, true);
+
+  }
+
+  
+  
   public void setJobLockService(JobLockService jobLockService) {
     this.jobLockService = jobLockService;
   }
