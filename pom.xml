@@ -14,8 +14,8 @@
   <properties>
     <alfresco.groupId>org.alfresco</alfresco.groupId>
     <alfresco.version>4.2.f</alfresco.version>
-    <java.source.version>1.7</java.source.version>
-    <java.target.version>1.7</java.target.version>
+    <java.source.version>1.8</java.source.version>
+    <java.target.version>1.8</java.target.version>
   </properties>
   <modules>
     <module>repo</module>

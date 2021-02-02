@@ -47,7 +47,7 @@ public interface NumberingComponent {
    * Get the next number in the sequence based on optionValue
    * 
    * @param nodeRef
-   * @param subOptionValue
+   * @param optionValue
    * @return
    */
 

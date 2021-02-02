@@ -137,6 +137,7 @@
             </executions>
             <configuration>
               <quiet>true</quiet>
+              <source>8</source>
             </configuration>
           </plugin>
         </plugins>

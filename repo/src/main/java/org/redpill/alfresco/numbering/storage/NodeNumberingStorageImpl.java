@@ -273,7 +273,7 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
           behaviourFilter.enableBehaviour();
         }
       }
-    }, false, true);
+    }, false, false);
 
   }
   
