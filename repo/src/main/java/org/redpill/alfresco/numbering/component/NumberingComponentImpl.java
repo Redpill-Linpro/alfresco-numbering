@@ -110,10 +110,22 @@ public class NumberingComponentImpl implements NumberingComponent, InitializingB
     assertAllowGetNextNumber(nodeRef);
     return numberingStorage.getNextNumber(startValue, id);
   }
-
+  
   @Override
+  public long getNextNumber(final NodeRef nodeRef,String subOptionValue) {
+ //   assertAllowGetNextNumber(nodeRef,subOptionValue);
+    return numberingStorage.getNextNumber(startValue, id,subOptionValue);
+  }
+
+
+ @Override
   public String getDecoratedNextNumber(final NodeRef nodeRef) {
     return decorator.decorate(getNextNumber(nodeRef), nodeRef);
+  }
+  
+  @Override
+  public String getDecoratedNextNumber(final NodeRef nodeRef,String subOptionValue) {
+    return decorator.decorate(getNextNumber(nodeRef,subOptionValue), nodeRef);
   }
 
   public void setRepositoryHelper(Repository repositoryHelper) {

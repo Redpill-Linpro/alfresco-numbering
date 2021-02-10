@@ -61,6 +61,8 @@ public class NumberingComponentIntegrationTest extends AbstractRepoIntegrationTe
     String expected = "D-"+(nextNumber+1);
     assertEquals(expected, decoratedNextNumber);
   }
+
+
   
   @Test
   public void testCurrentDatePrefixNumbering() {
@@ -73,6 +75,15 @@ public class NumberingComponentIntegrationTest extends AbstractRepoIntegrationTe
     expected = expected+"-"+(nextNumber+1);
     assertEquals(expected, decoratedNextNumber);
   }
+  
+  @Test
+  @Repeat(value = REPEAT)
+  public void testDropDownNumbering() {
+    long currentNumber = numberingComponent.getNextNumber(uploadDocument.getNodeRef(),"100");
+    long nextNumber = numberingComponent.getNextNumber(uploadDocument.getNodeRef(),"100");
+    assertEquals("Expected the next number " + nextNumber + " to be greater than the current number " + currentNumber, currentNumber + 1, nextNumber);
+  }
+  
   
   @Test
   @Repeat(value = REPEAT)

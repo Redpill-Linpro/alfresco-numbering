@@ -42,4 +42,24 @@ public interface NumberingComponent {
    * @return String
    */
   public String getDecoratedNextNumber(final NodeRef nodeRef);
+  
+  /**
+   * Get the next number in the sequence based on optionValue
+   * 
+   * @param nodeRef
+   * @param optionValue
+   * @return
+   */
+
+  public long getNextNumber(NodeRef nodeRef, String optionValue);
+  
+  /**
+   * Get the next number based on optionValue and decorate it
+   * 
+   * @param nodeRef
+   * @param optionValue
+   * @return
+   */
+
+  public String getDecoratedNextNumber(NodeRef nodeRef, String optionValue);
 }

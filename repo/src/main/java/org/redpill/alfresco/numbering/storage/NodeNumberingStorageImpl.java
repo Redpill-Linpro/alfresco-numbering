@@ -185,6 +185,99 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
     }, false, true);
 
   }
+  
+  
+  
+  
+  /**
+   * Create the counter node based on optionValue
+   *
+   * @param initialValue its initial value if node does not exist
+   * @param id the id of the counter
+   * @return NodeRef
+   */
+  protected NodeRef createCounterNode(final long initialValue, final String id,final String optionValue) {
+    String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+    AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.SYSTEM_USER_NAME);
+    ChildAssociationRef createNode = nodeService.createNode(getCounterApp(), ContentModel.ASSOC_CONTAINS, QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, id), ContentModel.TYPE_CONTENT);
+    nodeService.setProperty(createNode.getChildRef(), ContentModel.PROP_NAME, optionValue);
+    nodeService.addAspect(createNode.getChildRef(), ContentModel.ASPECT_HIDDEN, null);
+    nodeService.setProperty(createNode.getChildRef(), NUMBERING_PROPERTY, initialValue);
+    AuthenticationUtil.setFullyAuthenticatedUser(fullyAuthenticatedUser);
+    return createNode.getChildRef();
+  }
+  
+  
+  /**
+   * Get the counter node based on optionValue
+   *
+   * @param initialValue its initial value if node does not exist
+   * @param id the id of the counter
+   * @return NodeRef
+   */
+  protected NodeRef getCounterNode(final long initialValue, final String id,final String optionValue) {
+    NodeRef counterNodeRef = null;
+    if (counterCache.containsKey(optionValue)) {
+      counterNodeRef = counterCache.get(optionValue);
+      //If it has been removed, the remove it from cache
+      if (!nodeService.exists(counterNodeRef)) {
+        counterCache.remove(optionValue);
+        counterNodeRef = null;
+      }
+    }
+    if (counterNodeRef == null) {
+      //The counter was not found in cache, try to fetch it fro mthe repo
+      NodeRef counterAppFolderNodeRef = getCounterApp();
+      List<ChildAssociationRef> childAssocs = nodeService.getChildAssocs(counterAppFolderNodeRef);
+      QName expectedQname = QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI, id);
+      for (ChildAssociationRef childAssoc : childAssocs) {
+        Serializable property = nodeService.getProperty(childAssoc.getChildRef(), ContentModel.PROP_NAME);
+        if (optionValue.equals(property)) {
+          counterNodeRef = childAssoc.getChildRef();
+          break;
+        } else {
+          LOG.trace("Id: " + optionValue + ", property:" + property);
+        }
+      }
+
+      if (counterNodeRef == null) {
+        counterNodeRef = createCounterNode(initialValue, optionValue);
+      }
+
+      counterCache.put(optionValue, counterNodeRef);
+    }
+    return counterNodeRef;
+  }
+  
+  
+  @Override
+  public long getNextNumber(final long initialValue, final String ids,final String optionValue) {
+
+    return retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Long>() {
+      @Override
+      public Long execute() throws Throwable {
+        behaviourFilter.disableBehaviour();
+        String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+        AuthenticationUtil.setFullyAuthenticatedUser(AuthenticationUtil.SYSTEM_USER_NAME);
+        try {
+          NodeRef counterNode = getCounterNode(initialValue, optionValue,optionValue);
+          Long counterValue = (Long) nodeService.getProperty(counterNode, NUMBERING_PROPERTY);
+          nodeService.setProperty(counterNode, NUMBERING_PROPERTY, ++counterValue);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Counter " + optionValue + " increased to " + counterValue);
+          }
+          return counterValue;
+
+        } finally {
+          AuthenticationUtil.setFullyAuthenticatedUser(fullyAuthenticatedUser);
+          behaviourFilter.enableBehaviour();
+        }
+      }
+    }, false, false);
+
+  }
+  
+  
 
   public void setJobLockService(JobLockService jobLockService) {
     this.jobLockService = jobLockService;
