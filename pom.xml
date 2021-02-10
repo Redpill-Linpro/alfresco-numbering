@@ -8,7 +8,7 @@
   </parent>
   <groupId>org.redpill-linpro.alfresco.numbering</groupId>
   <artifactId>alfresco-numbering</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.3.0</version>
   <name>Alfresco Numbering</name>
   <packaging>pom</packaging>
   <properties>
