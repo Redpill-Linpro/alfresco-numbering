@@ -1,7 +1,7 @@
 package org.redpill.alfresco.numbering.decorator;
 
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A regular number series

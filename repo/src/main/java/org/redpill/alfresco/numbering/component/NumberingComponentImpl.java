@@ -35,11 +35,13 @@ public class NumberingComponentImpl implements NumberingComponent, InitializingB
 
   protected long startValue = 1;
   protected List<String> bindTypes = new ArrayList<>();
+  protected List<String> bindAspects = new ArrayList<>();
   protected List<String> ignoreTypes = new ArrayList<>();
   protected List<String> ignoreAspects = new ArrayList<>();
   protected List<QName> bindTypeQNames = new ArrayList<>();
   protected List<QName> ignoreTypeQNames = new ArrayList<>();
   protected List<QName> ignoreAspectQNames = new ArrayList<>();
+    protected List<QName>bindAspectQNames = new ArrayList<>();
   protected Decorator decorator;
   protected NamespaceService namespaceService;
 
@@ -74,6 +76,21 @@ public class NumberingComponentImpl implements NumberingComponent, InitializingB
       return false;
     }
 
+    // If list bindAspectQNames is not empty, check that the node is of allowed aspect
+    if (!bindAspectQNames.isEmpty()) {
+      boolean aspectMatch = false;
+      for (QName bindAspect : bindAspectQNames) {
+          if(nodeService.hasAspect(nodeRef, bindAspect)) {
+              aspectMatch = true;
+          }
+      }
+      if (!aspectMatch) {
+          if(LOG.isTraceEnabled())  {
+              LOG.trace("Node " + nodeRef + " is not in the list of allowed aspects ");
+          }
+          return false;
+      }
+    }
     //Check if the node type is on the type ignore list
     for (QName ignoreType : ignoreTypeQNames) {
       if (type.equals(ignoreType)) {
@@ -116,7 +133,6 @@ public class NumberingComponentImpl implements NumberingComponent, InitializingB
  //   assertAllowGetNextNumber(nodeRef,subOptionValue);
     return numberingStorage.getNextNumber(startValue, id,subOptionValue);
   }
-
 
  @Override
   public String getDecoratedNextNumber(final NodeRef nodeRef) {
@@ -178,6 +194,16 @@ public class NumberingComponentImpl implements NumberingComponent, InitializingB
       checkForDictionaryExistance(bindTypes, bindTypeQNames);
     }
   }
+
+    public void setBindAspects(List<String> bindAspects) {
+        this.bindAspects = bindAspects;
+        if (bindAspects != null) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Registering bind aspects: " + bindAspects.toString());
+            }
+            checkForDictionaryExistance(bindAspects, bindAspectQNames);
+        }
+    }
 
   public void setIgnoreAspects(List<String> ignoreAspects) {
     this.ignoreAspects = ignoreAspects;
