@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.redpill-linpro.alfresco.numbering</groupId>
     <artifactId>alfresco-numbering</artifactId>
-    <version>1.4.0</version>
+    <version>1.6.0</version>
     <name>alfresco-numbering Platform/Repository JAR Module</name>
     <description>Platform/Repo JAR Module (to be included in the alfresco.war)</description>
     <packaging>jar</packaging>
@@ -556,10 +556,6 @@
             <id>alfresco-internal</id>
             <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
         </repository>
-    <repository>
-      <id>redpill-public</id>
-      <url>https://maven.redpill-linpro.com/nexus/content/groups/public</url>
-    </repository>
     </repositories>
 
     <pluginRepositories>

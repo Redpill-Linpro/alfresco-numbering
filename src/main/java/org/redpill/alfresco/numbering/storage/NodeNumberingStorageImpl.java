@@ -310,13 +310,13 @@ public class NodeNumberingStorageImpl implements NumberingStorage, InitializingB
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    Assert.notNull(jobLockService);
-    Assert.notNull(behaviourFilter);
-    Assert.notNull(namespaceService);
-    Assert.notNull(nodeService);
-    Assert.notNull(repositoryHelper);
-    Assert.notNull(retryingTransactionHelper);
-    Assert.notNull(searchService);
+    Assert.notNull(jobLockService, "jobLockService must not be null");
+    Assert.notNull(behaviourFilter, "behaviourFilter must not be null");
+    Assert.notNull(namespaceService, "namespaceService must not be null");
+    Assert.notNull(nodeService, "nodeService must not be null");
+    Assert.notNull(repositoryHelper, "repositoryHelper must not be null");
+    Assert.notNull(retryingTransactionHelper, "retryingTransactionHelper must not be null");
+    Assert.notNull(searchService, "searchService must not be null");
   }
 
 }

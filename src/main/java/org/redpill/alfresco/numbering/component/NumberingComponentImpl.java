@@ -214,13 +214,13 @@ public class NumberingComponentImpl implements NumberingComponent, InitializingB
 
   @Override
   public void afterPropertiesSet() throws Exception {
-    Assert.notNull(repositoryHelper);
-    Assert.notNull(nodeService);
-    Assert.notNull(id);
-    Assert.notNull(dictionaryService);
-    Assert.notNull(namespaceService);
+    Assert.notNull(repositoryHelper, "repositoryHelper must not be null");
+    Assert.notNull(nodeService, "nodeService must not be null");
+    Assert.notNull(id, "id must not be null");
+    Assert.notNull(dictionaryService, "dictionaryService must not be null");
+    Assert.notNull(namespaceService, "namespaceService must not be null");
 
-    Assert.notNull(numberingStorage);
+    Assert.notNull(numberingStorage, "numberingStorage must not be null");
 
   }
 
